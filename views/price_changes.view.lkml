@@ -1,4 +1,5 @@
 view: price_changes {
+  drill_fields: [product_id,list_price_converged,previous_list,average_price_change,average_days_to_price_change,average_sales_change]
     derived_table: {
       sql: select
         product_id,

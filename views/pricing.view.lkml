@@ -1,4 +1,5 @@
 view: pricing {
+  drill_fields: [product_id, average_estimated_cost_per_unit, average_price_per_unit, total_estimated_units_sold,total_predicted_costs,total_predicted_gross_revenue,total_predicted_net_revenue ]
   derived_table: {
     sql: select product_id,
                 array_agg(list_price_converged
