@@ -13,7 +13,7 @@ view: price_changes {
         from (
       select
          product_id,list_price_converged,sum(invoiced_quantity_in_pieces) as total_ordered_pieces, sum(net_sales) as total_net_sales, min(fiscal_date) as first_price_date
-      from `leigha-bq-dev.retail.CDM_Pricing`  AS cdm_pricing
+      from ${cdm_pricing.SQL_TABLE_NAME} AS cdm_pricing
       group by 1,2
       order by 1, 2 asc
       )
@@ -87,14 +87,22 @@ view: price_changes {
 
     dimension_group: price_change {
       type: duration
-      sql_start: ${first_price_date_raw} ;;
-      sql_end: ${previous_first_price_date_raw} ;;
+      sql_start: ${previous_first_price_date_raw} ;;
+      sql_end: ${first_price_date_raw} ;;
     }
+
 
     dimension: percent_ordered_change {
       type: number
       value_format_name: percent_1
       sql: (${total_ordered_pieces}-${previous_total_ordered_pieces})/nullif(${previous_total_ordered_pieces},0) ;;
+    }
+
+    dimension: percent_price_change_bucket {
+      type: tier
+      sql: ${percent_price_change} ;;
+      tiers: [-2,-1,-0.5, -0.25,-0.1,0.1,0.25,0.5,1,2]
+      style: interval
     }
 
     dimension: percent_net_sales_change {
@@ -110,8 +118,8 @@ view: price_changes {
     }
 
     measure: average_days_to_price_change {
+      value_format_name: decimal_1
       type: average
-      value_format_name: percent_1
       sql: ${days_price_change} ;;
     }
 

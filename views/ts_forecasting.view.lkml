@@ -1,5 +1,6 @@
 view: arima_model {
   derived_table: {
+    persist_for: "24 hours"
     sql_create:
       CREATE OR REPLACE MODEL ${SQL_TABLE_NAME}
             OPTIONS
@@ -74,7 +75,7 @@ view: forecasting {
     sql: ${TABLE}.confidence_interval_upper_bound  ;;
   }
 
-  measure: total_quantity {
+  measure: total_forecasted_quantity {
     type: sum
     sql: ${forecast_value} ;;
   }

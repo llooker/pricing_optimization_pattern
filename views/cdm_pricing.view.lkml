@@ -164,11 +164,17 @@ view: cdm_pricing {
     sql: ${gross_sales} ;;
   }
 
+  measure: total_costs {
+    value_format_name: usd
+    type: number
+    sql: -1*(${total_fixed_production_costs_std}+${total_cash_discounts_and_other_sales_deductions}+
+    ${total_other_cost_of_sales}+${total_trade_budget_costs}+${total_variable_production_costs_std}) ;;
+  }
+
   measure: total_net_sales {
     value_format_name: usd
     type: number
-    sql: ${total_gross_sales}+${total_fixed_production_costs_std}+${total_cash_discounts_and_other_sales_deductions}+
-    ${total_other_cost_of_sales}+${total_trade_budget_costs}+${total_variable_production_costs_std};;
+    sql: ${total_gross_sales}-${total_costs};;
   }
 
   measure: total_cash_discounts_and_other_sales_deductions {
@@ -228,5 +234,10 @@ view: cdm_pricing {
     type: number
     value_format_name: percent_1
     sql: 1.0*(${total_net_sales})/nullif(${total_gross_sales},0) ;;
+  }
+
+  measure: total_cost_by_unit {
+    value_format_name: usd
+    sql: ${total_costs}/nullif(${total_invoiced_quantity_in_pieces},0) ;;
   }
 }
